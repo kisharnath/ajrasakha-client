@@ -420,8 +420,11 @@ const saveFarmerProfileController = async (req, res) => {
       }
 
       if (geo) {
-        // Whole object, so any leftover geo_* keys are removed
-        updateQuery.$set['farmerProfile.location'] = geo;
+        // The schema stores these as geo_latitude / geo_longitude; any other key is stripped by strict mode
+        updateQuery.$set['farmerProfile.location'] = {
+          geo_latitude: geo.latitude,
+          geo_longitude: geo.longitude,
+        };
       }
     } catch (err) {
       logger.error('Geocoding error:', err);
