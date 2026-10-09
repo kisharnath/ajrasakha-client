@@ -405,7 +405,7 @@ const saveFarmerProfileController = async (req, res) => {
       const storedLoc = stored.location ?? {};
 
       const hasStoredGeo =
-        typeof storedLoc.geo_latitude === 'number' && typeof storedLoc.geo_longitude === 'number';
+        typeof storedLoc.latitude === 'number' && typeof storedLoc.longitude === 'number';
       const touchesLocation = LOCATION_KEYS.some((k) => farmerProfile[k] !== undefined);
 
       // Geocode when a place field changed, or when there are no coordinates yet
@@ -420,10 +420,10 @@ const saveFarmerProfileController = async (req, res) => {
       }
 
       if (geo) {
-        // The schema stores these as geo_latitude / geo_longitude; any other key is stripped by strict mode
+        // Whole object, so any leftover geo_* keys are removed
         updateQuery.$set['farmerProfile.location'] = {
-          geo_latitude: geo.latitude,
-          geo_longitude: geo.longitude,
+          latitude: geo.latitude,
+          longitude: geo.longitude,
         };
       }
     } catch (err) {
